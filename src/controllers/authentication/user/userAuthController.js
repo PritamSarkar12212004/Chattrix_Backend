@@ -13,7 +13,7 @@ const userAuthController = async (req, res) => {
         user: {
           userEmail: existingUser.userEmail || null,
           userName: existingUser.userName || null,
-          userProfilePic: existingUser.userImage || null,
+          userProfilePic: existingUser.userProfilePic || null,
           userPublicKey:
             userLoginDecryption(existingUser.userPublicKey) || null,
           userPrivateKey:
@@ -25,7 +25,7 @@ const userAuthController = async (req, res) => {
     await userModel.create({
       userName: name,
       userEmail: email,
-      userImage: image,
+      userProfilePic: image,
       userPublicKey: userLoginEncryption().publicKey,
       userPrivateKey: userLoginEncryption().privateKey,
     });
@@ -36,7 +36,7 @@ const userAuthController = async (req, res) => {
       user: {
         userEmail: newUser.userEmail || null,
         userName: newUser.userName || null,
-        userProfilePic: newUser.userImage || null,
+        userProfilePic: newUser.userProfilePic || null,
         userPublicKey: userLoginDecryption(newUser.userPublicKey) || null,
         userPrivateKey: userLoginDecryption(newUser.userPrivateKey) || null,
       },

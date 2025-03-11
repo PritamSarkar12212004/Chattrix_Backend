@@ -7,7 +7,9 @@ const userAuthController = async (req, res) => {
     const { email, name, image } = req.body;
 
     const existingUser = await userModel.findOne({ userEmail: email });
+
     if (existingUser) {
+      console.log(existingUser._id);
       return res.status(200).json({
         message: "User already exists",
         user: {
@@ -18,6 +20,7 @@ const userAuthController = async (req, res) => {
             userLoginDecryption(existingUser.userPublicKey) || null,
           userPrivateKey:
             userLoginDecryption(existingUser.userPrivateKey) || null,
+          userId: existingUser._id || null,
         },
       });
     }
@@ -37,6 +40,7 @@ const userAuthController = async (req, res) => {
         userEmail: newUser.userEmail || null,
         userName: newUser.userName || null,
         userProfilePic: newUser.userProfilePic || null,
+        userId: newUser._id || null,
         userPublicKey: userLoginDecryption(newUser.userPublicKey) || null,
         userPrivateKey: userLoginDecryption(newUser.userPrivateKey) || null,
       },

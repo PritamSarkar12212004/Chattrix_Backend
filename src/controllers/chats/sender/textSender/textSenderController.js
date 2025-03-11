@@ -1,5 +1,4 @@
 const textSenderController = async (req, res) => {
-  const { data, senderPrivateKey, reciverKey } = req.body;
-  console.log(senderPrivateKey);
+  console.log(req.body);
 };
 export default textSenderController;

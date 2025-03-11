@@ -12,6 +12,7 @@ const addPersonController = async (req, res) => {
         userName: findData.userName,
         userProfilePic: findData.userProfilePic,
         userPublicKey: userLoginDecryption(findData.userPublicKey),
+        userMongoId: findData._id,
       },
     });
   } else {

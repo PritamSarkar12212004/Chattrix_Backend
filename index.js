@@ -12,22 +12,25 @@ import connectDB from "./src/database/dataBase.js";
 // import routes
 import userRoutes from "./src/routes/authentication/user/userRoutes.js";
 import ChatsRoute from "./src/routes/Chats/ChatsRoute.js";
+import socketManager from "./src/sockets/manager/socketManager.js";
 
 // create server
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Expo ke IP ya domain bhi laga sakte ho
-    methods: ["GET", "POST"],
-  },
-});
 
 // middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // allow to all request
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json()); // Middleware to handle JSON data
 
+// pass server to the socekt manager
+socketManager(server);
+
+// routes
 app.use("/login", userRoutes);
 app.use("/chat", ChatsRoute);
 // express error routes

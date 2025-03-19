@@ -9,15 +9,9 @@ const textMessageModel = new mongoose.Schema({
   },
   textReceiver: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", 
+    ref: "User",
   },
 
-  senderPublicKey: {
-    type: String,
-  },
-  nonce: {
-    type: String,
-  },
   createdAt: {
     type: Date,
     default: Date.now,

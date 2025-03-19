@@ -1,17 +1,18 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-import { Server } from "socket.io";
-import { createServer } from "http";
 import morgan from "morgan";
 import cors from "cors";
+import { createServer } from "http";
+
 
 // import database
 import connectDB from "./src/database/dataBase.js";
-
 // import routes
-import userRoutes from "./src/routes/authentication/user/userRoutes.js";
-import ChatsRoute from "./src/routes/Chats/ChatsRoute.js";
+import optSenderRoute from "./src/routes/optSenderRoutes/optSenderRoute.js";
+import userAuthRoute from "./src/routes/user/auth/userAuthRoute.js";
+import profileRoute from "./src/routes/user/profile/profileRoute.js";
+import chatDetchDataRoute from "./src/routes/chat/FetchRoute/chatDetchDataRoute.js";
 import socketManager from "./src/sockets/manager/socketManager.js";
 
 // create server
@@ -31,8 +32,11 @@ app.use(express.json()); // Middleware to handle JSON data
 socketManager(server);
 
 // routes
-app.use("/login", userRoutes);
-app.use("/chat", ChatsRoute);
+app.use("/utl", optSenderRoute);
+app.use("/user-auth", userAuthRoute);
+app.use("/user-profile", profileRoute);
+app.use("/chat-fetch", chatDetchDataRoute);
+
 // express error routes
 app.post("*", (req, res) => {
   res.send("page not found");

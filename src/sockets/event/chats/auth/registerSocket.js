@@ -5,7 +5,7 @@ user_key_map;
 
 // init the socket connection
 const registerSocket = (io, socket) => {
-  socket.on("register", (userId) => {
+  socket.on("register", ({ userId }) => {
     if (userId) {
       user_key_map.set(userId, socket.id);
       console.log(`user connected  ${userId} with id socket.Id  ${socket.id}`);
@@ -15,7 +15,7 @@ const registerSocket = (io, socket) => {
   });
 
   // disconnect the socket
-  socket.on("disconnect", (socket) => {
+  socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
     for (const [key, value] of user_key_map.entries()) {
       if (value === socket.id) {

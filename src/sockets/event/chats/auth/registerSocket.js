@@ -8,6 +8,7 @@ const registerSocket = (io, socket) => {
   socket.on("register", ({ userId }) => {
     if (userId) {
       user_key_map.set(userId, socket.id);
+      io.emit("get-user-status", "online");
       console.log(`user connected  ${userId} with id socket.Id  ${socket.id}`);
     } else {
       console.log(" user id  not provided ");
@@ -17,6 +18,7 @@ const registerSocket = (io, socket) => {
   // disconnect the socket
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
+    io.emit("get-user-status", "offline");
     for (const [key, value] of user_key_map.entries()) {
       if (value === socket.id) {
         user_key_map.delete(key);

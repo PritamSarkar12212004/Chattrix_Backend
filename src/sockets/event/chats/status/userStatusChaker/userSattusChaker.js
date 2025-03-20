@@ -5,7 +5,6 @@ const userSattusChaker = (io, socket) => {
     const { chekerRequestid, payloadId } = payload;
     // Get sender & receiver socket IDs
     const senderId = await user_key_map.get(chekerRequestid);
-
     if (payload && user_key_map.has(payloadId)) {
       io.to(senderId).emit("get-user-status", "online");
     } else {

@@ -4,8 +4,8 @@ const otpController = async (req, res) => {
   try {
     const fixedNumber = "+917620876689"; // Only send to this number
 
-    const accountSid = "AC3fdffbd13eb1f84408b05f24ee17267e";
-    const authToken = "884864a803488d9318db36278d5719b2";
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
     const client = twilio(accountSid, authToken);
 
     // Generate 6-digit OTP

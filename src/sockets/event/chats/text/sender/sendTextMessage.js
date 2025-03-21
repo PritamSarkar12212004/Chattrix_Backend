@@ -18,7 +18,12 @@ const sendTextMessage = (io, socket) => {
 
       // Create message object in database
       const createMess = await TextMessage.create({
-        message: message,
+        message: message?.text
+          ? message.text
+          : typeof message === "string"
+          ? message
+          : "",
+        messageImage: message?.image ? message.image : null,
         textSender: senderMongoId, // Store MongoDB user ID, not socket ID
         textReceiver: receiverMongoId,
       });

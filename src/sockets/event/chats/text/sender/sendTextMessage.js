@@ -1,43 +1,50 @@
-import TextMessage from "../../../../../models/message/textMessageModel.js";
 import user_key_map from "../../../map/keyMap.js";
+import pendingMessageModel from "../../../../../models/pending/pendingMessageModel.js";
+import textMessageModel from "../../../../../models/message/textMessageModel.js";
 
 const sendTextMessage = (io, socket) => {
   socket.on("send-message", async (data) => {
     try {
       const { message, receiverMongoId, senderMongoId } = data;
-      console.log(message, receiverMongoId, senderMongoId);
 
-      // Get sender & receiver socket IDs
       const senderId = user_key_map.get(senderMongoId);
       const receiverId = user_key_map.get(receiverMongoId);
 
-      if (!senderId && !receiverId) {
-        console.error("Invalid sender or receiver ID");
-        return;
-      }
-
-      // Create message object in database
-      const createMess = await TextMessage.create({
+      // 1. Create message in DB
+      const createdMessage = await textMessageModel.create({
         message: message?.text
           ? message.text
           : typeof message === "string"
           ? message
           : "",
-        messageImage: message?.image ? message.image : null,
-        textSender: senderMongoId, // Store MongoDB user ID, not socket ID
+        messageImage: message?.image || null,
+        messageAudio: message?.uploadedUrl || null,
+        textSender: senderMongoId,
         textReceiver: receiverMongoId,
       });
 
-      // Fetch the newly created message with user details
-      const messageData = await TextMessage.findById(createMess._id)
-        .populate("textSender", "id userName  userProfilePic")
-        .populate("textReceiver", "id userName  userProfilePic");
+      // 2. Populate sender & receiver details
+      const populatedMessage = await textMessageModel
+        .findById(createdMessage._id)
+        .populate("textSender", "id userName userProfilePic")
+        .populate("textReceiver", "id userName userProfilePic");
 
-      // Emit the message to both sender & receiver
-      io.to(senderId).emit("receive-message", messageData);
-      io.to(receiverId).emit("receive-message", messageData);
-    } catch (error) {
-      console.error("Error sending message:", error);
+      if (receiverId) {
+        // Receiver online -> emit to both
+        io.to(senderId).emit("receive-message", populatedMessage);
+        io.to(receiverId).emit("receive-message", populatedMessage);
+      } else {
+        // Receiver offline -> store pending message
+        await pendingMessageModel.create({
+          messageId: createdMessage._id,
+          receiverId: receiverMongoId,
+        });
+
+        // Inform sender that message sent & will deliver when receiver online
+        io.to(senderId).emit("receive-message", populatedMessage);
+      }
+    } catch (err) {
+      console.error("Error sending message:", err);
     }
   });
 };

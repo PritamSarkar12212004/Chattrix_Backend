@@ -39,6 +39,6 @@ const textMessageModel = new mongoose.Schema({
   },
 });
 
-const TextMessage = mongoose.model("textMessage", textMessageModel);
+const TextMessage = mongoose.model("TextMessage", textMessageModel);
 
 export default TextMessage;

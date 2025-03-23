@@ -16,10 +16,10 @@ const textMessageModel = new mongoose.Schema({
     type: String,
   },
   messageLocation: {
-    type: String,
+    type: {},
   },
   messageContact: {
-    type: String,
+    type: {},
   },
   messageLink: {
     type: String,

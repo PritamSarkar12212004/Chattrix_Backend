@@ -6,6 +6,10 @@ const sendTextMessage = (io, socket) => {
   socket.on("send-message", async (data) => {
     try {
       const { message, receiverMongoId, senderMongoId } = data;
+      const userlocation = {
+        latitude: message?.latitude || null,
+        longitude: message?.longitude || null,
+      };
 
       const senderId = user_key_map.get(senderMongoId);
       const receiverId = user_key_map.get(receiverMongoId);
@@ -19,6 +23,9 @@ const sendTextMessage = (io, socket) => {
           : "",
         messageImage: message?.image || null,
         messageAudio: message?.uploadedUrl || null,
+        messageLocation:
+          userlocation.latitude && userlocation.longitude ? userlocation : null,
+        messageContact: message?.phoneNumbers ? message : null,
         textSender: senderMongoId,
         textReceiver: receiverMongoId,
       });

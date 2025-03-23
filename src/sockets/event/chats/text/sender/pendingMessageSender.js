@@ -21,12 +21,6 @@ const pendingMessageSender = (io, socket) => {
       ],
     });
 
-    if (pendingMessages.length) {
-      console.log(
-        `Sending ${pendingMessages.length} pending messages to ${mongoId}`
-      );
-    }
-
     // Send all pending messages
     for (const pending of pendingMessages) {
       io.to(socket.id).emit("receive-message", pending.messageId); // Correct way
